@@ -6,12 +6,170 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeekTrust</title>
 </head>
-<link rel="stylesheet" href="/style.css" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<!-- <link rel="stylesheet" href="/style.css" /> -->
+<style>
+    th{
+        cursor: pointer;
+        color: #fff;
+    }
+</style>
 <body>
 
     <h1 id="title">GeekTrust</h1>
-    <div id="container"></div>
+    <input type="text" name="" id="myInput" placeholder="Search by name, email or role" onkeyup="searchFun()">
+
+
+    <!-- <div class="row">
+        <div class="row">
+            <div class="card card-body">
+                
+                <input type="text" name="" id="search-input" class="form-control">
+
+            </div>
+        </div>
+
+    </div> -->
+
+
+    <table class="table table-striped">
+        <tr  class="bg-info">
+            <th  class="bg-info" data-colname="name" data-order="desc">Name &#9650</th>
+            <th  data-colname="email" data-order="desc">Email &#9650</th>
+            <th  data-colname="role" data-order="desc">Role &#9650</th>
+        </tr>
+
+        <tbody id="myTable">
+
+        </tbody>
+    </table>
+        <!-- <div id="container"></div> -->
 </body>
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    async function getList(){
+    let res = await fetch(`https://geektrust.s3-ap-southeast-1.amazonaws.com/adminui-problem/members.json`)
 
-<script src="geektrust.js"></script>
+    let myList = await res.json()
+
+    showList(myList)
+
+    console.log(myList)
+
+}
+getList()
+
+
+function showList(myList){
+    myList.map((e)=>{
+        let div = document.createElement('div')
+
+        let p1 = document.createElement('p');
+        p1.innerText = e.name
+
+        let p2 = document.createElement('p');
+        p2.innerText = e.email
+
+        let p3 = document.createElement('p');
+        p3.innerText = e.role
+
+        div.append(p1,p2,p3)
+
+        container.append(div)
+    })
+}
+
+
+
+const searchFun = () => {
+
+    let filter = document.getElementById('myInput').value.toUpperCase();
+
+    let myTable = document.getElementById('myTable');
+    
+    let tr = myTable.getElementsByTagName('tr');
+
+    for(var i=0; i<tr.length; i++) {
+        let td = tr[i].getElementsByTagName('td')[0];
+
+        if(td){
+            let textvalue = td.textContent || td.innerHTML;
+
+            if(textvalue.toUpperCase().indexOf(filter) > -1){
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+
+}
+
+
+
+// $(`#search-input`).on(`keyup`, function(){
+//     var value = $(this).val()
+//     console.log("value:",value)
+//     var data = searchTable(value, myList)
+//     showList(data)
+// })
+
+// showList(data)
+
+// function searchTable(value, data) {
+//     var filteredData = [];
+//     for(var i=0; i<data.length; i++) {
+//         value = value.toLowerCase()
+//         var name = data[i].name.toLowerCase()
+
+//         if(name.includes(value)) {
+//             filteredData.push(data[i]);
+//         }
+//     }
+// }
+
+// $('th').on('click', function(){
+//      var column = $(this).data('colname')
+//      var order = $(this).data('order')
+//      var text = $(this).html()
+//      text = text.substring(0, text.length - 1);
+     
+     
+//      if (order == 'desc'){
+//         myList = myList.sort((a, b) => a[column] > b[column] ? 1 : -1)
+//         $(this).data("order","asc");
+//         text += '&#9660'
+//      }else{
+//         myList = myList.sort((a, b) => a[column] < b[column] ? 1 : -1)
+//         $(this).data("order","desc");
+//         text += '&#9650'
+//      }
+//     $(this).html(text)
+//     showList(myList)
+//     })
+
+
+   
+ 
+    
+function showList(data){
+    var table = document.getElementById('myTable')
+    table.innerHTML = ''
+
+
+    for (var i = 0; i < data.length; i++){
+        var colname = `name-${i}`
+        var colemail = `email-${i}`
+        var colrole = `role-${i}`
+
+        var row = `<tr>
+                        <td>${data[i].name}</td>
+                        <td>${data[i].email}</td>
+                        <td>${data[i].role}</td>
+                   </tr>`
+        table.innerHTML += row
+    }
+}
+
+</script>

@@ -33,3 +33,8 @@ function showData(data){
         container.append(div)
     })
 }
+
+
+const searchFun = () => {
+    let filter = document.getElementById("myInput").ariaValueMax.toUpperCase();
+}
